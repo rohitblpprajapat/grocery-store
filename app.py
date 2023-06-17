@@ -1,4 +1,4 @@
-from flask import Flask, url_for, redirect
+from flask import Flask, url_for, redirect, render_template, request, session, flash
 from model import *
 from flask_login import LoginManager, login_required, logout_user, UserMixin
 
@@ -9,10 +9,11 @@ from flask_login import LoginManager, login_required, logout_user, UserMixin
 
 
 app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///store.db'
 app.config['SECRET_KEY'] = 'FJSLDJFLSJFSJDFKJSDLFKJSD'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///store.db'
+
 db.init_app(app)
+app.app_context().push()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -29,7 +30,20 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    return "this will be login page"
+    if request.method == 'POST':
+        flash("login triggered")
+        username = request.form['email']
+        password = request.form['password']
+        
+        user = User.query.filter_by(username = username, password=password).first()
+        if user and user.password == password:
+            session['user_id'] = user.id
+            session['logged_in_user'] = True
+            flash("Login successful Username: %s" % user.username)
+            return redirect(url_for('home'))
+        flash('user not found')
+            
+    return render_template('login_user.html')
     
 
 @app.route('/logout', methods=['GET', 'POST'])
