@@ -1,6 +1,7 @@
 from flask import Flask, url_for, redirect, render_template, request, session, flash
 from model import *
 from flask_login import LoginManager, login_required, logout_user, UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 
@@ -31,19 +32,43 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        flash("login triggered")
         username = request.form['email']
         password = request.form['password']
         
-        user = User.query.filter_by(username = username, password=password).first()
-        if user and user.password == password:
+        user = User.query.filter_by(username = username).first()
+        
+        if not user or not check_password_hash(user.password, password):
+            flash('Invalid Credentials')
+            return url_for('login')
+        else:
             session['user_id'] = user.id
             session['logged_in_user'] = True
             flash("Login successful Username: %s" % user.username)
             return redirect(url_for('home'))
-        flash('user not found')
+        
             
     return render_template('login_user.html')
+
+@app.route('/register', methods=['GET','POST'])
+def register():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        hashed_password = generate_password_hash(password)
+        
+        user = User(name=name, username=username, password=hashed_password)
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        flash('Successfully registered')
+        redirect(url_for('login'))
+    
+    return render_template('register.html')
+
+        
+
     
 
 @app.route('/logout', methods=['GET', 'POST'])
