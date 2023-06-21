@@ -39,7 +39,7 @@ def login():
         
         if not user or not check_password_hash(user.password, password):
             flash('Invalid Credentials')
-            return url_for('login')
+            return redirect(url_for('login'))
         else:
             session['user_id'] = user.id
             session['logged_in_user'] = True
@@ -63,7 +63,7 @@ def register():
         db.session.commit()
         
         flash('Successfully registered')
-        redirect(url_for('login'))
+        return redirect(url_for('login'))
     
     return render_template('register.html')
 
