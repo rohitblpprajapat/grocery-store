@@ -26,7 +26,7 @@ def load_user(id):
 #============================================================ R O U T E S =================================================================
 @app.route('/', methods=['GET'])
 def home():
-    return "this will be home page"
+    return render_template('index.html')
     
 
 @app.route('/login', methods=['GET', 'POST'])
