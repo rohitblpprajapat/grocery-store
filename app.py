@@ -72,9 +72,11 @@ def register():
     
 
 @app.route('/logout', methods=['GET', 'POST'])
-@login_required
+
 def logout():
-    logout_user()
+    session.pop('user_id', None)
+    session.pop('username', None)
+    session.logged_in_user = False
     return redirect(url_for('home'))
 
 
