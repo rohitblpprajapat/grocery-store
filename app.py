@@ -1,6 +1,6 @@
 from flask import Flask, url_for, redirect, render_template, request, session, flash
 from model import *
-from flask_login import LoginManager, login_required, logout_user, UserMixin
+from flask_login import LoginManager, login_required, logout_user, UserMixin, login_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -40,7 +40,13 @@ def login():
         if not user or not check_password_hash(user.password, password):
             flash('Invalid Credentials')
             return redirect(url_for('login'))
+        
+        if user.username == 'admin':
+            login_user(user)
+            session['logged_in_admin'] = True
+            return redirect(url_for('admin'))
         else:
+            login_user(user)
             session['user_id'] = user.id
             session['logged_in_user'] = True
             flash("Login successful Username: %s" % user.username)
@@ -68,18 +74,33 @@ def register():
     return render_template('register.html')
 
         
-
-    
-
 @app.route('/logout', methods=['GET', 'POST'])
 
 def logout():
+    logout_user()
     session.pop('user_id', None)
     session.pop('username', None)
-    session.logged_in_user = False
+    session.pop('logged_in_user', None)
+    session.pop('logged_in_admin', None)
     return redirect(url_for('home'))
 
 
+
+#=============================================================================== Admin routes =================================================================
+
+@app.route('/admin')
+@login_required
+def admin():
+    catagory =Category.query.all()
+    product = Product.query.all()
+    
+    
+    return render_template('admin.html', catagory=catagory, product = product)
+    
+@app.route('/admin/insights')
+@login_required
+def insight():
+    return render_template('insights.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
