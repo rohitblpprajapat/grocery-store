@@ -1,7 +1,8 @@
 from flask import Flask, url_for, redirect, render_template, request, session, flash
 from model import *
-from flask_login import LoginManager, login_required, logout_user, UserMixin, login_user
+from flask_login import LoginManager, login_required, logout_user, UserMixin, login_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 
 
 
@@ -21,6 +22,15 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_admin:
+            flash("Access denied. You need admin permission")
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 #============================================================ R O U T E S =================================================================
@@ -43,6 +53,8 @@ def login():
         
         if user.username == 'admin':
             login_user(user)
+            user.is_admin = True
+            db.session.commit()
             session['logged_in_admin'] = True
             return redirect(url_for('admin'))
         else:
@@ -90,6 +102,7 @@ def logout():
 
 @app.route('/admin')
 @login_required
+@admin_required
 def admin():
     catagory =Category.query.all()
     product = Product.query.all()
@@ -99,6 +112,7 @@ def admin():
     
 @app.route('/admin/insights')
 @login_required
+@admin_required
 def insight():
     return render_template('insights.html')
 
