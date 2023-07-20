@@ -1,5 +1,5 @@
 from flask import Flask, url_for, redirect, render_template, request, session, flash
-from model import *
+from app.model import *
 from flask_login import LoginManager, login_required, logout_user, UserMixin, login_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
