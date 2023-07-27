@@ -9,7 +9,7 @@ api = Api(app)
 
 prod_parser = reqparse.RequestParser()
 prod_parser.add_argument(
-    'name', 
+    'name', fields.String
 )
 
 
