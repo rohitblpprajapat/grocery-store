@@ -1,0 +1,44 @@
+{%extends 'base.html'%}
+
+{%block content%}
+    <div class="container mt-4">
+        <h2>Add Product</h2>
+        <form method="POST" action="{{ url_for('admin.add_product') }}" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="MFD">MFD:</label>
+                <input type="date" class="form-control" id="MFD" name="MFD" required>
+            </div>
+            <div class="form-group">
+                <label for="EXP">EXP:</label>
+                <input type="date" class="form-control" id="EXP" name="EXP" required>
+            </div>
+            <div class="form-group">
+                <label for="rate">Rate:</label>
+                <input type="number" class="form-control" id="rate" name="rate" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            </div>
+            
+            
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" class="form-control" id="quantity" name="quantity" required>
+            </div>
+            <div class="form-group">
+                <label for="category_id">Category ID:</label>
+                <input type="number" class="form-control" id="category_id" name="category_id" required>
+            </div>
+            <div class="form-group">
+                <label for="image">Image:</label>
+                <input type="file" class="form-control-file" style="margin-top: 30px;" id="image" name="image" accept="image/*" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 30px;">Add Product</button>
+        </form>
+    </div>
+{%endblock%}

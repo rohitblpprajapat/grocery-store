@@ -115,7 +115,3 @@ def admin():
 def insight():
     return render_template('insights.html')
 
-if __name__ == "__main__":
-    app.run(debug=True)
-    
-    

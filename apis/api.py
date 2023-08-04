@@ -12,7 +12,7 @@ product_parser.add_argument('description', type=str, required=True, help='Descri
 product_parser.add_argument('image', type=str, required=True, help='Image is required')
 product_parser.add_argument('mimetype', type=str, required=True, help='Mimetype is required')
 product_parser.add_argument('quantity', type=int, required=True, help='Quantity is required')
-
+product_parser.add_argument('category_id', type=int, required=True, help='Category ID is required')
 category_parser = reqparse.RequestParser()
 category_parser.add_argument('name', type=str, required=True, help='Name is required')
 
@@ -26,7 +26,8 @@ product_fields = {
     'description': fields.String,
     'image': fields.String,
     'mimetype': fields.String,
-    'quantity': fields.Integer
+    'quantity': fields.Integer,
+    'category_id': fields.Integer
 }
 
 category_fields = {
@@ -88,7 +89,8 @@ class ProductListResource(Resource):
             description=args['description'],
             image=args['image'],
             mimetype=args['mimetype'],
-            quantity=args['quantity']
+            quantity=args['quantity'],
+            category_id=args['category_id']
         )
         db.session.add(product)
         db.session.commit()
@@ -136,7 +138,3 @@ class CategoryListResource(Resource):
         db.session.add(category)
         db.session.commit()
         return category, 201
-
-# Define API endpoints
-
-

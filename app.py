@@ -2,6 +2,10 @@ import os
 from flask import Flask
 from FreshCorner.model import db
 from flask_restful import Api
+from FreshCorner.admin import admin
+
+
+
 def create_app():
     app = Flask(__name__, template_folder="templates")
 
@@ -12,11 +16,12 @@ def create_app():
     db.init_app(app)
     app.app_context().push()
     api = Api(app)
-    print(app.jinja_loader.list_templates())
 
     return app, api
 
 app, api = create_app()
+
+app.register_blueprint(admin)
 
 from FreshCorner.authentication import *
 from apis.api import *
