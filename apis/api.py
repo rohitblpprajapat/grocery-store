@@ -1,11 +1,6 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, fields, marshal_with
-from model import db, User, Product, Category
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///store.db'
-db.init_app(app)
-api = Api(app)
+from FreshCorner.model import db, User, Product, Category
 
 # Define request parsers
 product_parser = reqparse.RequestParser()
@@ -143,10 +138,5 @@ class CategoryListResource(Resource):
         return category, 201
 
 # Define API endpoints
-api.add_resource(ProductResource, '/products/<int:id>')
-api.add_resource(ProductListResource, '/products')
-api.add_resource(CategoryResource, '/categories/<int:category_id>')
-api.add_resource(CategoryListResource, '/categories')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+

@@ -1,21 +1,15 @@
 from flask import Flask, url_for, redirect, render_template, request, session, flash
-from model import *
+from FreshCorner.model import *
 from flask_login import LoginManager, login_required, logout_user, UserMixin, login_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from flask import current_app as app
 
 
 
 
 #============================================================ C O N F I G U R T I O N =================================================================
 
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'FJSLDJFLSJFSJDFKJSDLFKJSD'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///store.db'
-
-db.init_app(app)
-app.app_context().push()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -42,7 +36,7 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['email']
+        username = request.form['username']
         password = request.form['password']
         
         user = User.query.filter_by(username = username).first()
@@ -75,12 +69,17 @@ def register():
         password = request.form.get('password')
         hashed_password = generate_password_hash(password)
         
-        user = User(name=name, username=username, password=hashed_password)
-        
-        db.session.add(user)
-        db.session.commit()
-        
-        flash('Successfully registered')
+        checkUser = User.query.filter_by(username = username).first()
+        if checkUser:
+            error="Username already exists."
+            flash(error)
+        else:
+            user = User(name=name, username=username, password=hashed_password)
+            
+            db.session.add(user)
+            db.session.commit()
+            
+            flash('Successfully registered')
         return redirect(url_for('login'))
     
     return render_template('register.html')
