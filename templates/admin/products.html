@@ -1,0 +1,26 @@
+{%extends 'base.html'%}
+
+{%block content%}
+
+<div class="card shadow mb-5">
+          <div class="card-body">
+            <div class="row row-cols-1 row-cols-md-6 g-4">
+                  {% for p in product %}
+                    <div class="col mb-3">
+                      <div class="card h-100">
+                        <img src="/static/product_img/{{p.image}}" class="card-img-top" alt="{{p.name}}">
+                        <div class="card-body">
+                          <ul class="list-group">
+                            <li class="list-group-item">{{ p.name }}</li>
+                            <li class="list-group-item">Price: {{p.rate}}</li>
+                        </ul>
+                        </div>
+                        
+                      </div>
+                    </div>
+                    {% endfor %}
+                </div>
+              </div>
+            </div>
+
+{%endblock%}

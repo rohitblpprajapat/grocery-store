@@ -21,15 +21,22 @@ def create_app():
 
 app, api = create_app()
 
+
+
 app.register_blueprint(admin)
 
-from FreshCorner.authentication import *
 from apis.api import *
-
 api.add_resource(ProductResource, '/products/<int:id>')
 api.add_resource(ProductListResource, '/products')
 api.add_resource(CategoryResource, '/categories/<int:category_id>')
 api.add_resource(CategoryListResource, '/categories')
+
+
+
+from FreshCorner.authentication import *
+from FreshCorner.public import *
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

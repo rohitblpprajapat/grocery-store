@@ -4,11 +4,10 @@ from flask_login import LoginManager, login_required, logout_user, UserMixin, lo
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from flask import current_app as app
+import requests
 
 
 
-
-#============================================================ C O N F I G U R T I O N =================================================================
 
 
 login_manager = LoginManager()
@@ -27,10 +26,7 @@ def admin_required(f):
     return decorated_function
 
 
-#============================================================ R O U T E S =================================================================
-@app.route('/', methods=['GET'])
-def home():
-    return render_template('index.html')
+
     
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -103,11 +99,9 @@ def logout():
 @login_required
 @admin_required
 def admin():
-    catagory =Category.query.all()
-    product = Product.query.all()
-    
-    
-    return render_template('admin.html', catagory=catagory, product = product)
+    catg = requests.get('http://127.0.0.1:5000/categories').json()
+    prods = requests.get('http://127.0.0.1:5000/products').json()
+    return render_template("admin/admin.html", products = prods, categories = catg)
     
 @app.route('/admin/insights')
 @login_required

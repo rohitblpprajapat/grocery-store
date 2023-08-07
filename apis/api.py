@@ -1,6 +1,5 @@
-from flask import Flask
-from flask_restful import Api, Resource, reqparse, fields, marshal_with
-from FreshCorner.model import db, User, Product, Category
+from flask_restful import Resource, reqparse, fields, marshal_with
+from FreshCorner.model import db, Product, Category
 
 # Define request parsers
 product_parser = reqparse.RequestParser()
