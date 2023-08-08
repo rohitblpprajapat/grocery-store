@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container text-center">
+    <div class="row justify-content-center">
+        <form method="POST" action="{{ url_for('admin.add_category')}}">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 30px;">Add Category</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

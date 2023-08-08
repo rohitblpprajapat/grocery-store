@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="mb-4">Welcome, {{ user.name }}!</h2>
+        
+        <h3>Your Purchase History</h3>
+        <ul class="list-group mt-3">
+            {% for purchase in purchase_history %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="mb-1">{{ purchase.product.name }}</h5>
+                            <p class="mb-1">Purchase Date: {{ purchase.purchase_date }}</p>
+                        </div>
+                        <div class="text-muted">
+                            Quantity: {{ purchase.quantity }}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+

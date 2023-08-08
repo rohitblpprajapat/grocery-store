@@ -1,7 +1,7 @@
 {% extends "base.html"%}
 
 {% block content %}
-<div id="carouselExampleCaptions" class="carousel slide">
+<div id="carouselExampleCaptions" class="carousel slide shadow">
     <div class="carousel-indicators">
       <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
       <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -46,17 +46,20 @@
         <div class="card shadow mb-5">
           <div class="card-body">
             <h3>{{c.name}}</h3>
-            <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="row row-cols-1 row-cols-md-6  g-4">
                   {% for p in products %}
                   {% if p.category_id == c.id %}
                     <div class="col mb-3">
-                      <div class="card h-100">
-                        <img src="/static/product_img/{{c.image}}" class="card-img-top" alt="{{p.name}}">
+                      <div class="card h-100 shadow">
+                        <img src="/static/product_img/{{p.image}}" class="card-img-top" alt="{{p.name}}">
                         <div class="card-body">
                           <ul class="list-group">
                             <li class="list-group-item">{{ p.name }}</li>
                             <li class="list-group-item">Price: {{p.rate}}</li>
                         </ul>
+                        <div class="card-footer">
+                          <a href="{{url_for('detail', product_id=p.id)}}" class="card-link">View Product</a>
+                      </div>
                         </div>
                         
                       </div>
