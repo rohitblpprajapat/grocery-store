@@ -2,6 +2,9 @@ import os
 import requests
 from flask import Blueprint, url_for, render_template, request, redirect, flash
 from werkzeug.utils import secure_filename
+from flask_login import login_required, current_user
+from functools import wraps
+
 
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
@@ -9,11 +12,21 @@ admin = Blueprint('admin', __name__, url_prefix='/admin')
 baseURL = "http://127.0.0.1:5000"
 
 
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_admin:
+            flash("Access denied. You need admin permission")
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 #===================================================PRODUCT METHODS====================================
 
 
 @admin.route('/addproduct', methods=['GET', 'POST'])
-
+@login_required
+@admin_required
 def add_product():
     cat = requests.get(f"{baseURL}/categories").json()
     if request.method == 'POST':
@@ -43,10 +56,13 @@ def add_product():
     # If it's a GET request, simply render the addproduct form
     return render_template('admin/addproduct.html', categories = cat)
 
-@admin.route('/update_product/<int:id>', methods = ['PUT','GET'])
-
+@admin.route('/update_product/<int:id>', methods = ['PUT','GET', 'POST'])
+@login_required
+@admin_required
 def update_product(id):
     prod = requests.get(f"{baseURL}/products/{id}")
+    product = prod.json()
+    cat = requests.get(f"{baseURL}/categories").json()
     if prod.status_code == 200:
         if  request.method == 'POST':
             poster = request.files ['image']
@@ -67,15 +83,16 @@ def update_product(id):
                 'category_id': int(request.form['category_id'])
             }
             response = requests.put(f"{baseURL}/products/{id}", json=data)
-            if response.status_code == 201:
+            if response.status_code == 200:
                 return redirect(url_for('admin'))
             else:
                 return "Error updating product."
 
-        return render_template('admin/update_product.html')
+        return render_template('admin/update_product.html', product = product, categories = cat)
 
 @admin.route('/delete_product/<int:id>', methods = ['GET', 'POST'])
-
+@login_required
+@admin_required
 def delete_product(id):
     prod = requests.get(f"{baseURL}/products/{id}")
     if prod.status_code == 200:
@@ -97,7 +114,8 @@ def delete_product(id):
         
 
 @admin.route('/add_category', methods=['GET','POST'])
-
+@login_required
+@admin_required
 def add_category():
     if request.method == 'POST':
         data = {
@@ -112,7 +130,8 @@ def add_category():
     return render_template('admin/add_category.html')
         
 @admin.route('/delete_category/<int:id>', methods=['GET', 'POST'])
-
+@login_required
+@admin_required
 def delete_category(id):
     catg = requests.get(f"{baseURL}/categories/{id}")
     if catg.status_code == 200:
@@ -128,7 +147,8 @@ def delete_category(id):
 
 
 @admin.route('/update_category/<int:id>', methods=['GET', 'POST'])
-
+@login_required
+@admin_required
 def update_category(id):
     catg = requests.get(f"{baseURL}/categories/{id}")
     if catg.status_code == 200:
