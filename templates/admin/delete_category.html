@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>Delete Category</h1>
+
+  <p>Are you sure, you want to delete the Category. "{{ c.name }}"?</p>
+  <p style="color: red;">Warning: Products associated with this category will be also deleted.</p>
+
+  <form method="post" action="{{ url_for('admin.delete_category', id=c.id) }}">
+    <button type="submit" class="btn btn-danger">Delete Category</button>
+  </form>
+</div>
+{% endblock %}

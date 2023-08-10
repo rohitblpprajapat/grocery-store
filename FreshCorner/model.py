@@ -25,17 +25,20 @@ class Product(db.Model):
     MFD = db.Column(db.String())
     EXP = db.Column(db.String())
     rate = db.Column(db.Integer(), nullable=False)
+    unit = db.Column(db.String())
     description = db.Column(db.String())
     image = db.Column(db.Text, unique = True, nullable=False)
     mimetype = db.Column(db.Text, nullable=False)
     quantity = db.Column(db.Integer(), nullable=False)
     category_id = db.Column(db.Integer(), db.ForeignKey('category.id'), nullable = False)
     catagory = db.relationship('Category', backref=db.backref('products', lazy=True))
+    deleted = db.Column(db.Boolean(), default=False)
     
     
 class Category(db.Model):
     id = db.Column(db.Integer(), primary_key = True)
     name = db.Column(db.String(), nullable=False)
+    deleted = db.Column(db.Boolean(), default=False)
     
     
 class PurchaseHistory(db.Model):

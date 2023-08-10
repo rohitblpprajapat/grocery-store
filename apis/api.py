@@ -7,6 +7,7 @@ product_parser.add_argument('name', type=str, required=True, help='Name is requi
 product_parser.add_argument('MFD', type=str, required=True, help='MFD is required')
 product_parser.add_argument('EXP', type=str, required=True, help='EXP is required')
 product_parser.add_argument('rate', type=int, required=True, help='Rate is required')
+product_parser.add_argument('unit', type=str, help='please put unit')
 product_parser.add_argument('description', type=str, required=True, help='Description is required')
 product_parser.add_argument('image', type=str, required=True, help='Image is required')
 product_parser.add_argument('mimetype', type=str, required=True, help='Mimetype is required')
@@ -22,6 +23,7 @@ product_fields = {
     'MFD': fields.String,
     'EXP': fields.String,
     'rate': fields.Integer,
+    'unit': fields.String,
     'description': fields.String,
     'image': fields.String,
     'mimetype': fields.String,
@@ -39,7 +41,7 @@ class ProductResource(Resource):
     @marshal_with(product_fields)
     def get(self, id):
         product = Product.query.get(id)
-        if product:
+        if not product.deleted:
             return product
         else:
             return {'message': 'Product not found'}, 404
@@ -53,6 +55,7 @@ class ProductResource(Resource):
             product.MFD = args['MFD']
             product.EXP = args['EXP']
             product.rate = args['rate']
+            product.unit = args['unit']
             product.description = args['description']
             product.image = args['image']
             product.mimetype = args['mimetype']
@@ -65,7 +68,7 @@ class ProductResource(Resource):
     def delete(self, id):
         product = Product.query.get(id)
         if product:
-            db.session.delete(product)
+            product.deleted = True
             db.session.commit()
             return {'message': 'Product deleted'}
         else:
@@ -74,7 +77,7 @@ class ProductResource(Resource):
 class ProductListResource(Resource):
     @marshal_with(product_fields)
     def get(self):
-        products = Product.query.all()
+        products = Product.query.filter_by(deleted = False).all()
         return products
 
     @marshal_with(product_fields)
@@ -85,6 +88,7 @@ class ProductListResource(Resource):
             MFD=args['MFD'],
             EXP=args['EXP'],
             rate=args['rate'],
+            unit=args['unit'],
             description=args['description'],
             image=args['image'],
             mimetype=args['mimetype'],
@@ -99,7 +103,7 @@ class CategoryResource(Resource):
     @marshal_with(category_fields)
     def get(self, category_id):
         category = Category.query.get(category_id)
-        if category:
+        if not category.deleted:
             return category
         else:
             return {'message': 'Category not found'}, 404
@@ -118,7 +122,7 @@ class CategoryResource(Resource):
     def delete(self, category_id):
         category = Category.query.get(category_id)
         if category:
-            db.session.delete(category)
+            category.deleted = True
             db.session.commit()
             return {'message': 'Category deleted'}
         else:
@@ -127,7 +131,7 @@ class CategoryResource(Resource):
 class CategoryListResource(Resource):
     @marshal_with(category_fields)
     def get(self):
-        categories = Category.query.all()
+        categories = Category.query.filter_by(deleted = False).all()
         return categories
 
     @marshal_with(category_fields)

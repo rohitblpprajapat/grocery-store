@@ -41,6 +41,7 @@ def add_product():
             'MFD': request.form['MFD'],
             'EXP': request.form['EXP'],
             'rate': int(request.form['rate']),
+            'unit': request.form['unit'],
             'description': request.form['description'],
             'image': filename,
             'mimetype': mimetype,
@@ -76,6 +77,7 @@ def update_product(id):
                 'MFD': request.form['MFD'],
                 'EXP': request.form['EXP'],
                 'rate': int(request.form['rate']),
+                'unit': request.form['unit'],
                 'description': request.form['description'],
                 'image': filename,
                 'mimetype': mimetype,
@@ -96,21 +98,24 @@ def update_product(id):
 def delete_product(id):
     prod = requests.get(f"{baseURL}/products/{id}")
     if prod.status_code == 200:
-        response = requests.delete(f'{baseURL}/products/{id}')
-        product_data = prod.json()
-        image_filename = product_data.get('image', '')
-        if image_filename:
-            image_path = os.path.join("static/product_img", image_filename)
-            if os.path.exists(image_path):
-                os.remove(image_path)
+        if request.method == 'POST':
+            response = requests.delete(f'{baseURL}/products/{id}')
+            product_data = prod.json()
+            image_filename = product_data.get('image', '')
+            if image_filename:
+                image_path = os.path.join("static/product_img", image_filename)
+                if os.path.exists(image_path):
+                    os.remove(image_path)
+                else:
+                    flash("Associated image not found.", 'warning')
+            if response.status_code == 200:
+                flash("Product Deleted Succesfully.")
+                return redirect(url_for('admin'))
             else:
-                flash("Associated image not found.", 'warning')
-        if response.status_code == 200:
-            flash("Product Deleted Succesfully.")
-            return redirect(url_for('admin'))
-        else:
-            return 'error in deleting product'
-    return "can't find product you wanna delete."
+                flash('error in deleting product')
+                return redirect(url_for('admin'))
+        return render_template('admin/delete_product.html', p = prod.json())
+    flash("can't find product you wanna delete.")
         
 
 @admin.route('/add_category', methods=['GET','POST'])
@@ -135,13 +140,15 @@ def add_category():
 def delete_category(id):
     catg = requests.get(f"{baseURL}/categories/{id}")
     if catg.status_code == 200:
-        res = requests.delete(f"{baseURL}/categories/{id}")
-        if res.status_code == 200:
-            flash('Category deleted successfuly')
-            return redirect(url_for('admin'))
-        else:
-            flash('There are products associted with this category. Please delete them first.')
-            return redirect(url_for('admin'))
+        if request.method=='POST':
+            res = requests.delete(f"{baseURL}/categories/{id}")
+            if res.status_code == 200:
+                flash('Category deleted successfuly')
+                return redirect(url_for('admin'))
+            else:
+                flash('There are products associted with this category. Please delete them first.')
+                return redirect(url_for('admin'))
+        return render_template('admin/delete_category.html', c = catg.json())
     else:
         return "can't find the product you wanna delete"
 
@@ -160,5 +167,17 @@ def update_category(id):
             requests.put(f"{baseURL}/categories/{id}", json=data)
             return redirect(url_for('admin'))
         return render_template('admin/update_category.html', c = c)
+    
+@admin.route('/category/<int:id>', methods=['GET'])
+@login_required
+@admin_required
+def category_page(id):
+    prods = requests.get(f'{baseURL}/products').json()
+    cats = requests.get(f'{baseURL}/categories/{id}').json()
+    products = []
+    for prod in prods:
+        if prod['category_id'] == id:
+            products.append(prod)
+    return render_template('admin/category_page.html', products = products, cats = cats)
 
         

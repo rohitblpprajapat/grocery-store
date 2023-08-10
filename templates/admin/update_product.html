@@ -17,8 +17,17 @@
                 <input type="date" class="form-control" id="EXP" name="EXP" value="{{product.EXP}}" required>
             </div>
             <div class="form-group">
-                <label for="rate">Rate:</label>
-                <input type="number" class="form-control" id="rate" name="rate" value="{{product.rate}}" required>
+                <label for="rate">Rate: (please write rate including units. eg: 40/kg, 120/Dozen)</label>
+                <input type="text" class="form-control" id="rate" name="rate" value="{{product.rate}}" required>
+                <div class="form-group">
+                    <label for="unit">Unit:</label>
+                    <select class="form-control" id="unit" name="unit" required>
+                        <option value="" disabled selected>Select a unit</option>
+                        {% for u in unit %}
+                            <option value="{{ unit }}">{{ u }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
             <div class="form-group">
                 <label for="description">Description:</label>

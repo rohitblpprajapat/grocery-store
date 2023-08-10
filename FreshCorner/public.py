@@ -39,3 +39,13 @@ def search_products():
     ).all()
 
     return render_template('search_results.html', search_term=search_term, products=products, categories = categories)
+
+@app.route('/category_page/<int:id>', methods = ['GET', 'POST'])
+def category_page(id):
+    prods = requests.get(f'http://127.0.0.1:5000/products').json()
+    cats = requests.get(f'http://127.0.0.1:5000/categories/{id}').json()
+    products = []
+    for prod in prods:
+        if prod['category_id'] == id:
+            products.append(prod)
+    return render_template('category_page.html', products = products, cats = cats)

@@ -27,9 +27,12 @@ def add_to_cart(product_id):
 @login_required
 def view_cart():
     user = current_user
+    total_value=0
     cart_items = Cart.query.filter_by(user_id=user.id).all()
+    for item in cart_items:
+        total_value += int(item.quantity) * int(item.product.rate)
     
-    return render_template('cart.html', cart_items=cart_items)
+    return render_template('cart.html', cart_items=cart_items, total_value = total_value)
 
 @cart_bp.route('/update_cart/<int:cart_id>', methods=['POST'])
 @login_required
