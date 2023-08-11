@@ -9,13 +9,15 @@ cart_bp = Blueprint('cart', __name__)
 def add_to_cart(product_id):
     user = current_user
     product = Product.query.get_or_404(product_id)
+    if request.method == 'POST':
+        quantity = request.form['quantity']
     
     # Check if the product is already in the user's cart
     if Cart.query.filter_by(user_id=user.id, product_id=product.id).first():
         flash('Product is already in your cart.', 'warning')
         return redirect(url_for('detail', product_id=product.id))
     
-    new_cart_item = Cart(user=user, product=product)
+    new_cart_item = Cart(user=user, product=product, quantity = quantity)
     db.session.add(new_cart_item)
     db.session.commit()
     
@@ -29,8 +31,11 @@ def view_cart():
     user = current_user
     total_value=0
     cart_items = Cart.query.filter_by(user_id=user.id).all()
+    
     for item in cart_items:
-        total_value += int(item.quantity) * int(item.product.rate)
+        if item.quantity != None:
+            total_value += int(item.quantity) * int(item.product.rate)
+    print(total_value)
     
     return render_template('cart.html', cart_items=cart_items, total_value = total_value)
 

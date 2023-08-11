@@ -48,6 +48,7 @@ def login():
             user.is_admin = True
             db.session.commit()
             session['logged_in_admin'] = True
+            flash('Welcome Admin Sir!')
             return redirect(url_for('admin'))
         else:
             login_user(user)
@@ -91,6 +92,7 @@ def logout():
     session.pop('username', None)
     session.pop('logged_in_user', None)
     session.pop('logged_in_admin', None)
+    flash('logout sccessfully!')
     return redirect(url_for('home'))
 
 
