@@ -20,6 +20,7 @@ def create_app():
     app.app_context().push()
     api = Api(app)
 
+
     return app, api
 
 app, api = create_app()
