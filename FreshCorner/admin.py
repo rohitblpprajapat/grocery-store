@@ -29,6 +29,7 @@ def admin_required(f):
 @admin_required
 def add_product():
     cat = requests.get(f"{baseURL}/categories").json()
+    units = ['kg', 'grams', 'dozen', 'unit' ]
     if request.method == 'POST':
         # Get the form data from the request
         poster = request.files ['image']
@@ -55,7 +56,7 @@ def add_product():
             return "Error adding product."
 
     # If it's a GET request, simply render the addproduct form
-    return render_template('admin/addproduct.html', categories = cat)
+    return render_template('admin/addproduct.html', categories = cat, units = units)
 
 @admin.route('/update_product/<int:id>', methods = ['PUT','GET', 'POST'])
 @login_required
@@ -64,6 +65,7 @@ def update_product(id):
     prod = requests.get(f"{baseURL}/products/{id}")
     product = prod.json()
     cat = requests.get(f"{baseURL}/categories").json()
+    units = ['kg', 'grams', 'dozen', 'unit' ]
     if prod.status_code == 200:
         if  request.method == 'POST':
             poster = request.files ['image']
@@ -90,7 +92,7 @@ def update_product(id):
             else:
                 return "Error updating product."
 
-        return render_template('admin/update_product.html', product = product, categories = cat)
+        return render_template('admin/update_product.html', product = product, categories = cat, units = units)
 
 @admin.route('/delete_product/<int:id>', methods = ['GET', 'POST'])
 @login_required

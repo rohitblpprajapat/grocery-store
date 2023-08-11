@@ -9,7 +9,7 @@
         <div class="col-md-6">
             <h2>{{ product.name }}</h2>
             <p class="lead">{{ product.description }}</p>
-            <p class="font-weight-bold">Price: ${{ product.rate }}</p>
+            <p class="font-weight-bold">Price: ${{ product.rate }} /{{product.unit}}</p>
             {% if 10 > product.quantity > 0 %}
             <p class="font-weight-bold">only {{ product.quantity }} left</p>
             {% elif product.quantity == 0 %}
