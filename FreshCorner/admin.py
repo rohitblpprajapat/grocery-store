@@ -99,26 +99,23 @@ def update_product(id):
 @admin_required
 def delete_product(id):
     prod = requests.get(f"{baseURL}/products/{id}")
-    if prod.status_code == 200:
-        if request.method == 'POST':
-            response = requests.delete(f'{baseURL}/products/{id}')
-            product_data = prod.json()
-            image_filename = product_data.get('image', '')
-            if image_filename:
-                image_path = os.path.join("static/product_img", image_filename)
-                if os.path.exists(image_path):
-                    os.remove(image_path)
-                else:
-                    flash("Associated image not found.", 'warning')
-            if response.status_code == 200:
-                flash("Product Deleted Succesfully.")
-                return redirect(url_for('admin'))
+    if request.method == 'POST':
+        response = requests.delete(f'{baseURL}/products/{id}')
+        product_data = prod.json()
+        image_filename = product_data.get('image', '')
+        if image_filename:
+            image_path = os.path.join("static/product_img", image_filename)
+            if os.path.exists(image_path):
+                os.remove(image_path)
             else:
-                flash('error in deleting product')
-                return redirect(url_for('admin'))
-        return render_template('admin/delete_product.html', p = prod.json())
-    flash("can't find product you wanna delete.")
-        
+                flash("Associated image not found.", 'warning')
+        if response.status_code == 200:
+            flash("Product Deleted Succesfully.")
+            return redirect(url_for('admin'))
+        else:
+            flash('error in deleting product')
+            return redirect(url_for('admin'))
+    return render_template('admin/delete_product.html', p = prod.json())        
 
 @admin.route('/add_category', methods=['GET','POST'])
 @login_required
