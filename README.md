@@ -1,7 +1,7 @@
 # grocery-store
 
 Create a virtual environment
-```python -venv env```
+```python -m venv env```
 
 install all requirements
 
