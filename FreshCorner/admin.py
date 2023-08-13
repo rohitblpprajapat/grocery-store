@@ -53,7 +53,7 @@ def add_product():
         if response.status_code == 201:
             return redirect(url_for('admin'))
         else:
-            return "Error adding product."
+            flash('Error in adding product')
 
     # If it's a GET request, simply render the addproduct form
     return render_template('admin/addproduct.html', categories = cat, units = units)
@@ -90,7 +90,8 @@ def update_product(id):
             if response.status_code == 200:
                 return redirect(url_for('admin'))
             else:
-                return "Error updating product."
+                flash('there was an error in adding product.')
+                return redirect(url_for('detail', id = id))
 
         return render_template('admin/update_product.html', product = product, categories = cat, units = units)
 

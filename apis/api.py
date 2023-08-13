@@ -69,6 +69,7 @@ class ProductResource(Resource):
         product = Product.query.get(id)
         if product:
             product.deleted = True
+            product.image= "None"
             db.session.commit()
             return {'message': 'Product deleted'}
         else:

@@ -27,7 +27,7 @@ class Product(db.Model):
     rate = db.Column(db.Integer(), nullable=False)
     unit = db.Column(db.String())
     description = db.Column(db.String())
-    image = db.Column(db.Text, unique = True, nullable=False)
+    image = db.Column(db.Text, unique = False, nullable=False)
     mimetype = db.Column(db.Text, nullable=False)
     quantity = db.Column(db.Integer(), nullable=False)
     category_id = db.Column(db.Integer(), db.ForeignKey('category.id'), nullable = False)
