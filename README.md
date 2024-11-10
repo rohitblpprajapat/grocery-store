@@ -8,7 +8,7 @@ install all requirements
 
 ```pip install -r requirements.txt```
 
-Creating db if already no created 
+Creating db 
 
 ```from FreshCorner.model import *```
 ```db.create_all()```
