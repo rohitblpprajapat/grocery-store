@@ -1,5 +1,7 @@
 # Grocery Store
 
+
+
 ## Description:
 The "Grocery Store" project is a web application designed for modern shopping experiences.
  Built using Flask, Jinja2 templates, and SQLite, it provides a user-friendly interface for customers to
@@ -61,6 +63,8 @@ run the app.py file i.e. outside the application
 
 
 and you're good to go.
+
+> Note: Api and app are running simultaneously in the create_app function in app.py i.e. outside the app. Also both are running on the same url.
 
 
 
